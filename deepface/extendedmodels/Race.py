@@ -35,7 +35,8 @@ class RaceClient(Demography):
         self.model_name = "Race"
 
     def predict(self, img: np.ndarray) -> np.ndarray:
-        return self.model.predict(img, verbose=0)[0, :]
+        # XXX fix memory leak # return self.model.predict(img, verbose=0)[0, :]
+        return self.model(img)[0, :]
 
 
 def load_model(

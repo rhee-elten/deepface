@@ -33,7 +33,8 @@ class ApparentAgeClient(Demography):
         self.model_name = "Age"
 
     def predict(self, img: np.ndarray) -> np.float64:
-        age_predictions = self.model.predict(img, verbose=0)[0, :]
+        # XXX fix memory leak # age_predictions = self.model.predict(img, verbose=0)[0, :]
+        age_predictions = self.model(img)[0, :]
         return find_apparent_age(age_predictions)
 
 

@@ -43,12 +43,20 @@ def load_image(img: Union[str, np.ndarray]) -> Tuple[np.ndarray, str]:
 
     # image must be a file on the system then
 
-    # image name must have english characters
-    if img.isascii() is False:
-        raise ValueError(f"Input image must not have non-english characters - {img}")
+    # # image name must have english characters
+    # if img.isascii() is False:
+    #     raise ValueError(f"Input image must not have non-english characters - {img}")
 
-    img_obj_bgr = cv2.imread(img)
-    # img_obj_rgb = cv2.cvtColor(img_obj_bgr, cv2.COLOR_BGR2RGB)
+    # img_obj_bgr = cv2.imread(img)
+    # # img_obj_rgb = cv2.cvtColor(img_obj_bgr, cv2.COLOR_BGR2RGB)
+
+    ## workaround: handle non-english path
+    with open(img, 'rb') as f:
+        im_encoded = f.read()
+
+    img_obj_bgr = cv2.imdecode(np.frombuffer(
+        im_encoded, dtype=np.uint8), flags=cv2.IMREAD_UNCHANGED)
+
     return img_obj_bgr, img
 
 
