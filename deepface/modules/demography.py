@@ -113,6 +113,18 @@ def analyze(
                 f"Invalid action passed ({repr(action)})). "
                 "Valid actions are `emotion`, `age`, `gender`, `race`."
             )
+
+    action_models = dict()
+    for action in actions:
+        if action == "emotion":
+            action_models[action] = modeling.build_model("Emotion")
+        elif action == "age":
+            action_models[action] = modeling.build_model("Age")
+        elif action == "gender":
+            action_models[action] = modeling.build_model("Gender")
+        elif action == "race":
+            action_models[action] = modeling.build_model("Race")
+
     # ---------------------------------
     resp_objects = []
 
@@ -145,7 +157,7 @@ def analyze(
                 if action == "emotion":
                     # model.predict causes memory issue when it is called in a for loop
                     # emotion_predictions = modeling.build_model("Emotion").predict(img_content)
-                    emotion_predictions = modeling.build_model("Emotion")(img_content)
+                    emotion_predictions = action_models[action].predict(img_content)
                     sum_of_predictions = emotion_predictions.sum()
 
                     obj["emotion"] = {}
@@ -158,14 +170,14 @@ def analyze(
                 elif action == "age":
                     # model.predict causes memory issue when it is called in a for loop
                     # apparent_age = modeling.build_model("Age").predict(img_content)
-                    apparent_age = modeling.build_model("Age")(img_content)
+                    apparent_age = action_models[action].predict(img_content)
                     # int cast is for exception - object of type 'float32' is not JSON serializable
                     obj["age"] = int(apparent_age)
 
                 elif action == "gender":
                     # model.predict causes memory issue when it is called in a for loop
                     # gender_predictions = modeling.build_model("Gender").predict(img_content)
-                    gender_predictions = modeling.build_model("Gender")(img_content)
+                    gender_predictions = action_models[action].predict(img_content)
                     obj["gender"] = {}
                     for i, gender_label in enumerate(Gender.labels):
                         gender_prediction = 100 * gender_predictions[i]
@@ -176,7 +188,7 @@ def analyze(
                 elif action == "race":
                     # model.predict causes memory issue when it is called in a for loop
                     # race_predictions = modeling.build_model("Race").predict(img_content)
-                    race_predictions = modeling.build_model("Race")(img_content)
+                    race_predictions = action_models[action].predict(img_content)
                     sum_of_predictions = race_predictions.sum()
 
                     obj["race"] = {}

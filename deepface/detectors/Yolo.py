@@ -69,7 +69,9 @@ class YoloClient(Detector):
         resp = []
 
         # Detect faces
-        results = self.model.predict(img, verbose=False, show=False, conf=0.25)[0]
+        # XXX fix memory leak # age_predictions = self.model.predict(img, verbose=0)[0, :]
+        # results = self.model.predict(img, verbose=False, show=False, conf=0.25)[0]
+        results = self.model(img, verbose=False, show=False, conf=0.25)[0]
 
         # For each face, extract the bounding box, the landmarks and confidence
         for result in results:
